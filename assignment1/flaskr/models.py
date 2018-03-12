@@ -18,15 +18,21 @@ class KomradeConfig:
             fh.write(json.dumps(data))
 
 def registerUser(username, password):
-    komrade = KomradeConfig("user")
-    
+    # security hole. sanitize ``username``!
+    komrade = KomradeConfig(username)
+    data = {
+        'username': username,
+        'password': password # hash this password
+    }
+    komrade.write(data)
     # Implement me
 
     return None
 
 def validateUser(username, password):
-    komrade = KomradeConfig("user")
-
+    komrade = KomradeConfig(username)
     # Implement me
 
-    return None
+    data = komrade.read()
+    # Hash these password!
+    return data['password'] == password

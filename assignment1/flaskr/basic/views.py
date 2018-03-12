@@ -24,12 +24,17 @@ def logout():
 def register():
     if request.method == "POST":
         # Implement me
-        return "register request received", 400
+        username = request.form.get('username')
+        password = request.form.get('password')
+        # Debuglogs
+        # print('username: ' + username)
+        # print('password: ' + password)
+        models.registerUser(username, password)
+        return "register request received", 200
 
     return render_template("register.html")
 
 @app.route('/users/<account>')
 def users(account):
     # Implement me
-
     return render_template("users.html")
