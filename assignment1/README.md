@@ -30,6 +30,8 @@ Initials or first name are commonly used identities for git branches.
 ## Run
 
 ```shell
+./run.py
+# or
 export FLASK_APP=run.py
 flask run
 ```
