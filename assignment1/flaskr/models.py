@@ -20,6 +20,7 @@ class KomradeConfig:
 def registerUser(username, password):
     # @todo: security hole. sanitize ``username``!
     komrade = KomradeConfig(username)
+    # sanitize here!
     data = {
         'username': username,
         'password': password # @todo hash this password
