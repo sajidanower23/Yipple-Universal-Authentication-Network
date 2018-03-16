@@ -17,8 +17,12 @@ class KomradeConfig:
         with open(self.config_file, 'w') as fh:
             fh.write(json.dumps(data))
 
+def sanitise_name(name):
+    return name.replace("/", "")
+
 def registerUser(username, password):
     # @todo: security hole. sanitize ``username``!
+    username = sanitise_name(username)
     komrade = KomradeConfig(username)
     # sanitize here!
     data = {
