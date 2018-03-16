@@ -10,6 +10,8 @@ def home():
 def login():
     if request.method == "POST":
         # Implement me
+        username = request.form.get('username')
+        password = request.form.get('password')
         return "login request received", 400
 
     return render_template("login.html")
@@ -29,8 +31,10 @@ def register():
         # Debuglogs
         # print('username: ' + username)
         # print('password: ' + password)
-        models.registerUser(username, password)
-        return "register request received", 200
+        if models.registerUser(username, password):
+            return redirect(url_for('basic.login'))
+        else:
+            return "User already exists", 400
 
     return render_template("register.html")
 

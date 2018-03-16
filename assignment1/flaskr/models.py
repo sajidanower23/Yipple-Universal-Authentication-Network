@@ -20,6 +20,13 @@ class KomradeConfig:
 def sanitise_name(name):
     return name.replace("/", "")
 
+def user_exists(komrade):
+    # try:
+    return komrade.read() != {}
+    # return True
+    # except FileNotFoundError:
+    #     return False
+
 def registerUser(username, password):
     # @todo: security hole. sanitize ``username``!
     username = sanitise_name(username)
@@ -29,10 +36,10 @@ def registerUser(username, password):
         'username': username,
         'password': password # @todo hash this password
     }
+    if user_exists(komrade):
+        return False
     komrade.write(data)
-    # Implement me
-
-    return None
+    return True
 
 def validateUser(username, password):
     komrade = KomradeConfig(username)
