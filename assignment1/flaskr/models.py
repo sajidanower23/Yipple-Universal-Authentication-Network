@@ -27,7 +27,6 @@ def user_exists(komrade):
 def registerUser(username, password):
     username = sanitise_name(username)
     komrade = KomradeConfig(username)
-    # sanitize here!
     data = {
         'username': username,
         'password': password # @todo hash this password
