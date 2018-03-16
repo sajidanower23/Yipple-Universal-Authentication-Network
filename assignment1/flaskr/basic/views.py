@@ -15,9 +15,7 @@ def login():
         is_valid = models.validateUser(username, password)
         if is_valid:
             session['username'] = username
-            return redirect(
-                        url_for('basic.users',
-                        account=username))
+            return redirect(url_for('basic.users', account=username))
         else:
             return "Invalid credentials", 403
 
@@ -43,7 +41,6 @@ def register():
             return "Could not process request", 500
     return render_template("register.html")
 
-@app.route('/users/<account>')
-def users(account):
-    # Implement me
-    return render_template("users.html", account=account)
+@app.route('/users/me')
+def users():
+    return render_template("users.html", account=session['username'])
