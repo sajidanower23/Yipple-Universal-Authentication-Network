@@ -8,6 +8,6 @@ is_dev = True
 
 if __name__ == "__main__":
     if is_dev:
-        app.run(port=9447, debug=True)        
+        app.run(port=9447, debug=True)
     else:
         app.run(port=9447, debug=False, host='0.0.0.0')
