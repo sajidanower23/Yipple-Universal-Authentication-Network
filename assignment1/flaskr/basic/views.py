@@ -10,16 +10,22 @@ def home():
 def login():
     if request.method == "POST":
         # Implement me
-        username = request.form.get('username')
+        username = models.sanitise_name(request.form.get('username'))
         password = request.form.get('password')
-        return "login request received", 400
+        is_valid = models.validateUser(username, password)
+        if is_valid:
+            session['username'] = username
+            return redirect(
+                        url_for('basic.users',
+                        account=username))
+        else:
+            return "Invalid credentials", 403
 
     return render_template("login.html")
 
 @app.route('/logout', methods=["GET"])
 def logout():
     session.clear()
-
     return redirect(url_for("basic.home"))
 
 @app.route('/register', methods=["GET", "POST"])
@@ -28,17 +34,16 @@ def register():
         # Implement me
         username = request.form.get('username')
         password = request.form.get('password')
-        # Debuglogs
-        # print('username: ' + username)
-        # print('password: ' + password)
-        if models.registerUser(username, password):
-            return redirect(url_for('basic.login'))
-        else:
-            return "User already exists", 400
-
+        try:
+            if models.registerUser(username, password):
+                return redirect(url_for('basic.login'))
+            else:
+                return "User already exists", 400
+        except:
+            return "Could not process request", 500
     return render_template("register.html")
 
 @app.route('/users/<account>')
 def users(account):
     # Implement me
-    return render_template("users.html")
+    return render_template("users.html", account=account)

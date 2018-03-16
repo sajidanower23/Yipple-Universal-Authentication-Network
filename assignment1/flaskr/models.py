@@ -5,6 +5,7 @@ import uuid
 
 class KomradeConfig:
     def __init__(self, name):
+        name = sanitise_name(name)
         self.config_file = os.path.join(os.path.dirname(__file__), "../" + name + ".json")
 
         if not os.path.exists(self.config_file):
@@ -21,14 +22,9 @@ def sanitise_name(name):
     return name.replace("/", "")
 
 def user_exists(komrade):
-    # try:
     return komrade.read() != {}
-    # return True
-    # except FileNotFoundError:
-    #     return False
 
 def registerUser(username, password):
-    # @todo: security hole. sanitize ``username``!
     username = sanitise_name(username)
     komrade = KomradeConfig(username)
     # sanitize here!
@@ -41,10 +37,9 @@ def registerUser(username, password):
     komrade.write(data)
     return True
 
+# Implement me
 def validateUser(username, password):
     komrade = KomradeConfig(username)
-    # Implement me
-
     data = komrade.read()
     # @todo Check the hashes of these passwords!
-    return data['password'] == password
+    return user_exists(komrade) and data['password'] == password
