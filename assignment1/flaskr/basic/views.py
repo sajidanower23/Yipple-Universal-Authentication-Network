@@ -8,6 +8,9 @@ def home():
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
+    if 'username' in session:
+        return redirect(url_for("basic.users", account="me"))
+
     if request.method == "POST":
         # Implement me
         username = models.sanitise_name(request.form.get('username'))
