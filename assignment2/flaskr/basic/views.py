@@ -85,8 +85,11 @@ def users(account):
     # the creds database.
     if request.method == 'GET':
         # TODO: Display credentials if user belongs to current session, or if user is admin.
+        if is_valid_user(username):
+            response = render_template("users.html", username=username)
+        else:
+            response = "Not found", 404
         # Deny access otherwise and display '404 not found' on the page
-        response = render_template("users.html", username=username)
     else:
         # TODO: Update The Credentials
         # Two types of users can edit credentials for <account>
@@ -95,6 +98,13 @@ def users(account):
         response = render_template("users.html", username=username)
 
     return response
+
+def is_valid_user(username):
+    sess_username = session['username']
+    if sess_username == username:# or username == 'admin':
+        return True
+    else:
+        return False
 
 @app.route('/admin')
 def admin():
