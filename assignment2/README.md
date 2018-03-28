@@ -1,27 +1,32 @@
 # Build2
+
 ## Overview
+
 Since we’ve hit the market, our user base has grown incredibly, with many users transferring their capital into Yipple. However, the viral and explosive growth of our platform has left us unable to manage our users via the database. We need to outsource our credential management to the users. We also need you to implement an Administrative account that can view users accounts and modify their details.
 
 You will focus on two routes in particular:
-1. `/admin`
-2. `/users/<accounts>`
 
-## What you have currently.
+1. `/admin`
+1. `/users/<accounts>`
+
+## What you have currently
+
 Build2 has the user account and registration system set up for you. It uses sqlite3
 backend and a users.db to do this. In addition to this, a credentials database
 is available containing the account credentials of users. You should
 examine the scripts in `/flaskr/db/` and run the init script to create the databases. You are welcome to extend the database, but do not change what is currently there.
 
 The credentials schema looks like this
+
 1. Account Name
-3. Address
-2. Email
-3. Phone Number
-4. Current Account Funds
+1. Address
+1. Email
+1. Phone Number
+1. Current Account Funds
 
 ```sql
 CREATE TABLE creds(
-	uid INTEGER,
+    uid INTEGER,
     name TEXT NOT NULL,
     address TEXT NOT NULL,
     email TEXT NOT NULL,
@@ -31,12 +36,15 @@ CREATE TABLE creds(
 ```
 
 ## Database Setup
+
 You will want to initialise the sqlite3 databases first.
 
 1. `cd db` and then run `initdb.sh`
 
 ## What you must build
+
 ### User Backend (views.py)
+
 For the route `/users/<account>`, you must show a user their information.
 For regular users that are logged into KomradeBank, they must be allowed to view and update their own user credentials. You should display the queried / updated values out to the page as separate entities.
 
@@ -62,6 +70,7 @@ def users(account):
 ```
 
 ### User Frontend (users.html)
+
 You must create a template that outputs the user credentials if they are logged in as that user, or are an administrator. Present to them their current details as well as a form to edit their details. Make sure no other user can edit another users details.
 
 ```html
@@ -104,9 +113,11 @@ Ignore the uid field in the form, it's an older screenshot.
 ![](img/user2.png)
 
 ### Administration backend (views.py)
+
 You can use the same users database, but you might need to add a new parameter in order to tell the difference between administrators and regular users.
 
 2. The administration backend must support POST requests
+
 and return the credentials of a searched user. To view
 
 ```python
@@ -134,8 +145,8 @@ def admin():
 It will look like this
 ![](img/admin1.png)
 
-
 ### Administration frontend (admin.html)
+
 You must create the template for the administration front end.
 The administration front end provisions the form for account searching.
 After performing a search, the front end exposes the user
