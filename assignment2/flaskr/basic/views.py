@@ -5,6 +5,7 @@ from flask_session import Session
 from . import app
 from .. import models
 import os
+from .. import db
 
 @app.route('/')
 def home():
@@ -86,7 +87,9 @@ def users(account):
     if request.method == 'GET':
         # TODO: Display credentials if user belongs to current session, or if user is admin.
         if is_valid_user(username):
-            response = render_template("users.html", username=username)
+            # TODO get the user info from the database
+            user_info = get_user_info(username)
+            response = render_template("users.html", username=username, user_info=user_info)
         else:
             response = "Not found", 404
         # Deny access otherwise and display '404 not found' on the page
@@ -99,7 +102,21 @@ def users(account):
 
     return response
 
+def get_user_info(username):
+    (uid,) = db.queryDB('SELECT uid from users where username=?', (username,), True)
+    (_, name, address, email, phone, funds) = \
+        db.queryDB('SELECT * from creds where uid=?', (uid,), True)
+    return {
+        'name': name,
+        'address': address,
+        'email': email,
+        'phone': phone,
+        'funds': funds
+    }
+
+# Checks if user is logged in
 def is_valid_user(username):
+    if 'username' not in session: return False
     sess_username = session['username']
     if sess_username == username:# or username == 'admin':
         return True
