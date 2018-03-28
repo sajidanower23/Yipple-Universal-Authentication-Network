@@ -74,7 +74,7 @@ def register():
 
     return render_template("register.html")
 
-@app.route('/users/<account>')
+@app.route('/users/<account>', methods=["GET", "POST"])
 def users(account):
     username = account
 
@@ -85,20 +85,20 @@ def users(account):
     # TODO: Implement the ability to edit and view credentials for
     # the creds database.
     if request.method == 'GET':
-        # TODO: Display credentials if user belongs to current session, or if user is admin.
         if is_valid_user(username):
-            # TODO get the user info from the database
             user_info = get_user_info(username)
             response = render_template("users.html", username=username, user_info=user_info)
         else:
-            response = "Not found", 404
+            response = "404 not found", 404
         # Deny access otherwise and display '404 not found' on the page
     else:
         # TODO: Update The Credentials
         # Two types of users can edit credentials for <account>
         # 1. Regular Users that have sessions == <account>
         # 2. Administrators.
-        response = render_template("users.html", username=username)
+        user_info = get_user_info(username)
+        response = render_template("users.html", username=username, user_info=user_info)
+        # response = render_template("users.html", username=username)
 
     return response
 
