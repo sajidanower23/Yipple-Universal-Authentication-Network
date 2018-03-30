@@ -6,6 +6,7 @@
 {% if username %}
 <h5>Welcome, {{ username }}, what can we do for you today?</h5>
 
+{% if user_info %}
 <h3>View your Credentials</h3>
 <p>Name: {{ user_info['name'] }} </p>
 <p>Address: {{ user_info['address'] }} </p>
@@ -21,6 +22,12 @@
     <p>Phone: <input type="text" value="{{ user_info['phone'] }}"> </p>
     <p>Funds: <input type="text" value="{{ user_info['funds'] }}"> </p>
     <input type="submit" value="Submit">
+</form>
+{% endif %}
+<h3>Search</h3>
+<form method="GET">
+    <input type="text" name="username"></input>
+    <button type="submit" class="btn">Search</button>
 </form>
 
 {% else %}

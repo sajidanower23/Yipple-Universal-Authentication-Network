@@ -80,7 +80,7 @@ def users(account):
 
     if username == 'me':
         if 'username' in session:
-            response = render_template("users.html", username=username)
+            return render_template("users.html", username=username)
 
     # TODO: Implement the ability to edit and view credentials for
     # the creds database.
