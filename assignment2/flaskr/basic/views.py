@@ -103,7 +103,12 @@ def users(account):
     return response
 
 def get_user_info(username):
+    print("searching for "+username)
+    if db.queryDB('SELECT uid from users where username=?', (username,), True) is None:
+        print(username+" not found, will return None lol")
+        return None
     (uid,) = db.queryDB('SELECT uid from users where username=?', (username,), True)
+    print("uid is "+str(uid))
     (_, name, address, email, phone, funds) = \
         db.queryDB('SELECT * from creds where uid=?', (uid,), True)
     return {
@@ -124,8 +129,9 @@ def is_valid_user(username):
     #     return False
     return sess_username == username
 
-@app.route('/admin')
+@app.route('/admin', methods=["GET", "POST"])
 def admin():
+    # why does admin.html have a login button?
     response = None
 
     # if not logged in, 403
@@ -143,15 +149,45 @@ def admin():
         # TODO: Implement and secure the user administration control panel
         # The administration panel must distinguish between users that are administrators
         # as well as regular users.
+
+        # ^idk wtf this means 
+        # Aren't regular users prohibited from viewing this page? (Colin) 
+
         # It should also be able to search for a user via a get parameter called user.
-        searchedUser = request.args.get('user')
-        response = render_template("admin.html", user=searchedUser)
+        # searchedUser = request.args.get('user')
+        # ^fkn prankd, the param name is search, not user. why they do dis
+        searchedUser = request.args.get('search')
+        if searchedUser is not None: #if a user was searched for:
+
+            user_info = get_user_info(searchedUser)
+            if user_info is None:
+                print("get_user_info couldn't find em, soz")
+                # ceebs writing a message onto the page
+            response = render_template("admin.html", user=searchedUser, user_info=user_info)
+            print("YASSSSSSSS")
+            return response
+        #response = render_template("admin.html", user=searchedUser)+"<!--wtb"+searchedUser+"-->"
+        response = render_template("admin.html")
+        print("fuck\n")
 
     elif request.method == 'POST':
         # TODO: You must also implement a post method in order update a searched users credentials.
         # It must return a page that denies a regular user
         # access and display '403 permission denied'.
-        response = render_template("admin.html")
+        #response = render_template("admin.html")
+
+        print("oi")
+        #for idx, shit in enumerate(request.form['admin_cred_update']):
+        for idx, shit in enumerate(request.form):
+            print("shit #"+str(idx)+" is "+shit+" and has val: "+request.form.get(shit))
+        if 'user' in request.form:
+            print("asdfdsfadfas")
+            searchedUser = request.form.get('user')
+            response = render_template("admin.html", user=searchedUser)
+            return response
+
+        response = render_template("admin.html") # think this is the default?
+        
 
     return response
 

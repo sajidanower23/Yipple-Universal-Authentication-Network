@@ -22,7 +22,7 @@ to edit and update the credentials of any given KomradeBank account.
 -->
 <div>
     <h3>Searched Account Credentials</h3>
-    {% if user %}
+    {% if user and user_info %} <!--I added "and user_info", does it even work?-->
     <table class="table">
         <thead>
             <th>Name</th>
@@ -34,17 +34,29 @@ to edit and update the credentials of any given KomradeBank account.
         <!-- IMPLEMENT ME -->
         <tbody>
             <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>Name: {{ user_info['name'] }} </td>
+                <td>Address: {{ user_info['address'] }} </td>
+                <td>Email: {{ user_info['email'] }} </td>
+                <td>Phone: {{ user_info['phone'] }} </td>
+                <td>Funds: {{ user_info['funds'] }} </td>
             </tr>
         </tbody>
     </table>
 
     <h3>Edit credentials for {{ user }} </h3>
-    <form><!-- IMPLEMENT ME --></form>
+    <!-- IMPLEMENT ME -->
+    <form method="POST" id="admin_cred_update" action="admin">
+       <!--copypasted from users.html-->
+       <p>Name: <input type="text" name="fuck1" value="{{user_info['name']}}"> </p>
+       <p>Address: <input type="text" name="fuck2" value="{{ user_info['address'] }}"> </p>
+       <p>Email: <input type="text" name="fuck3" value="{{ user_info['email'] }}"> </p>
+       <p>Phone: <input type="text" name="fuck4" value="{{ user_info['phone'] }}"> </p>
+       <p>Funds: <input type="text" name="fuck5" value="{{ user_info['funds'] }}"> </p>
+       <input type="hidden" name=fuck6 value="{{ user }}">
+       <button type="submit" class="btn">fuck</button>
+          <!--PROTIP: if your form is not submitting via POST request, 
+             check that the inputs actually have "name"s (id is for js only) -->
+    </form>
 
     {% else %}
     <p>Search for a user to edit their credentials</p>
