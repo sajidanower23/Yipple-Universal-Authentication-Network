@@ -185,9 +185,20 @@ def admin():
         #    searchedUser = request.form.get('user')
         #    response = render_template("admin.html", user=searchedUser)
         #    return response
+        if 'user' in request.form: #assumed this is enough, bc I cbf checking everything
+            # get all the params (we're assuming they exist)
+            user = request.form.get('user') # the one we are searching for
+            name = request.form.get('name')
+            address = request.form.get('address')
+            email = request.form.get('email')
+            phonenum = request.form.get('phone')
+            funds = request.form.get('funds')
+            (uid,) = db.queryDB('SELECT uid from users where username=?', (user,), True)
+            db.insertDB('UPDATE creds SET name=?, address=?, email=?, phonenum=?, funds=? WHERE uid=?', (name, address, email, phonenum, funds, uid), True) #honestly idk what the True does
 
 
         response = render_template("admin.html") # think this is the default?
+        #might be more useful to continue displaying the user though
         
 
     return response
