@@ -180,11 +180,12 @@ def admin():
         #for idx, shit in enumerate(request.form['admin_cred_update']):
         for idx, shit in enumerate(request.form):
             print("shit #"+str(idx)+" is "+shit+" and has val: "+request.form.get(shit))
-        if 'user' in request.form:
-            print("asdfdsfadfas")
-            searchedUser = request.form.get('user')
-            response = render_template("admin.html", user=searchedUser)
-            return response
+        #if 'user' in request.form:
+        #    print("asdfdsfadfas")
+        #    searchedUser = request.form.get('user')
+        #    response = render_template("admin.html", user=searchedUser)
+        #    return response
+
 
         response = render_template("admin.html") # think this is the default?
         
