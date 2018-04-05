@@ -1,7 +1,8 @@
 CREATE TABLE users(
     uid SERIAL PRIMARY KEY,
     username TEXT NOT NULL UNIQUE,
-    passhash TEXT NOT NULL
+    passhash TEXT NOT NULL,
+    isAdmin INTEGER -- if this breaks, blame me (Colin)
 );
 
 CREATE TABLE creds(
@@ -13,9 +14,12 @@ CREATE TABLE creds(
     funds INTEGER
 );
 
-INSERT INTO users (uid, username, passhash) VALUES (0, 'admin', 'alice');
-INSERT INTO users (uid, username, passhash) VALUES (1, 'Bobby\" DROP TABLES;--', '\" OR \"1\"=\"1\"');
-INSERT INTO users (uid, username, passhash) VALUES (2, 'carol', '0xbe3fcafeb4b3');
+-- INSERT INTO users (uid, username, passhash) VALUES (0, 'admin', 'alice');
+-- INSERT INTO users (uid, username, passhash) VALUES (1, 'Bobby\" DROP TABLES;--', '\" OR \"1\"=\"1\"');
+-- INSERT INTO users (uid, username, passhash) VALUES (2, 'carol', '0xbe3fcafeb4b3');
+INSERT INTO users (uid, username, passhash, isAdmin) VALUES (0, 'admin', 'alice', 1);
+INSERT INTO users (uid, username, passhash, isAdmin) VALUES (1, 'Bobby\" DROP TABLES;--', '\" OR \"1\"=\"1\"', 0);
+INSERT INTO users (uid, username, passhash, isAdmin) VALUES (2, 'carol', '0xbe3fcafeb4b3', 0);
 
 INSERT INTO creds (uid, name, address, email, phonenum, funds) VALUES ('0', 'Alice Administrator', 'Omnipotent', 'alice@alice.com', '+313 373 8483', 31333337);
 INSERT INTO creds (uid, name, address, email, phonenum, funds) VALUES ('1', 'Bob Bandit', 'Nowhere', 'bob@bob.com', '-123 456 7890', 1337);

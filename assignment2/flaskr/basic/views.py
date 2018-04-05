@@ -118,14 +118,26 @@ def get_user_info(username):
 def is_valid_user(username):
     if 'username' not in session: return False
     sess_username = session['username']
-    if sess_username == username:# or username == 'admin':
-        return True
-    else:
-        return False
+    # if sess_username == username:# or username == 'admin':
+    #     return True
+    # else:
+    #     return False
+    return sess_username == username
 
 @app.route('/admin')
 def admin():
     response = None
+
+    # if not logged in, 403
+    if 'username' not in session: return "403 permission denied"
+
+    username = session['username']
+
+    # if not admin, 403
+    if not is_admin(username): # oh god I hope I'm doing this right
+        # response = "403 permission denied"
+        # return response
+        return "403 permission denied", 403
 
     if request.method == 'GET':
         # TODO: Implement and secure the user administration control panel
@@ -146,3 +158,17 @@ def admin():
 
 
 
+# Checks if user is admin
+def is_admin(username):
+    # if 'username' not in session: return False
+    # sess_username = session['username']
+
+    # if not is_valid_user(username): return False
+    # ^dunno if I should do this here
+    #make a db query
+    (isAdmin,) = db.queryDB('SELECT isAdmin from users where username=?', (username,), True)
+    return isAdmin
+    # if sess_username == username:# or username == 'admin':
+    #     return True
+    # else:
+    #     return False
