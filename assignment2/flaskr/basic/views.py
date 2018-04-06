@@ -103,12 +103,9 @@ def users(account):
     return response
 
 def get_user_info(username):
-    print("searching for "+username)
-    if db.queryDB('SELECT uid from users where username=?', (username,), True) is None:
-        print(username+" not found, will return None lol")
+    uid = get_uid(username)
+    if uid is None:
         return None
-    (uid,) = db.queryDB('SELECT uid from users where username=?', (username,), True)
-    print("uid is "+str(uid))
     (_, name, address, email, phone, funds) = \
         db.queryDB('SELECT * from creds where uid=?', (uid,), True)
     return {
@@ -123,26 +120,18 @@ def get_user_info(username):
 def is_valid_user(username):
     if 'username' not in session: return False
     sess_username = session['username']
-    # if sess_username == username:# or username == 'admin':
-    #     return True
-    # else:
-    #     return False
     return sess_username == username
 
 @app.route('/admin', methods=["GET", "POST"])
 def admin():
     # why does admin.html have a login button?
     response = None
-
-    # if not logged in, 403
+    # This is being checked in the function `is_admin`
     if 'username' not in session: return "403 permission denied"
 
     username = session['username']
 
-    # if not admin, 403
-    if not is_admin(username): # oh god I hope I'm doing this right
-        # response = "403 permission denied"
-        # return response
+    if not is_admin(username):
         return "403 permission denied", 403
 
     if request.method == 'GET':
@@ -154,21 +143,14 @@ def admin():
         # Aren't regular users prohibited from viewing this page? (Colin) 
 
         # It should also be able to search for a user via a get parameter called user.
-        # searchedUser = request.args.get('user')
-        # ^fkn prankd, the param name is search, not user. why they do dis
-        searchedUser = request.args.get('search')
+        searchedUser = request.args.get('user')
         if searchedUser is not None: #if a user was searched for:
 
             user_info = get_user_info(searchedUser)
             if user_info is None:
-                print("get_user_info couldn't find em, soz")
-                # ceebs writing a message onto the page
-            response = render_template("admin.html", user=searchedUser, user_info=user_info)
-            print("YASSSSSSSS")
-            return response
-        #response = render_template("admin.html", user=searchedUser)+"<!--wtb"+searchedUser+"-->"
+                return '404 User not found', 404
+            return render_template("admin.html", user=searchedUser, user_info=user_info)
         response = render_template("admin.html")
-        print("fuck\n")
 
     elif request.method == 'POST':
         # TODO: You must also implement a post method in order update a searched users credentials.
@@ -176,15 +158,6 @@ def admin():
         # access and display '403 permission denied'.
         #response = render_template("admin.html")
 
-        print("oi")
-        #for idx, shit in enumerate(request.form['admin_cred_update']):
-        for idx, shit in enumerate(request.form):
-            print("shit #"+str(idx)+" is "+shit+" and has val: "+request.form.get(shit))
-        #if 'user' in request.form:
-        #    print("asdfdsfadfas")
-        #    searchedUser = request.form.get('user')
-        #    response = render_template("admin.html", user=searchedUser)
-        #    return response
         if 'user' in request.form: #assumed this is enough, bc I cbf checking everything
             # get all the params (we're assuming they exist)
             user = request.form.get('user') # the one we are searching for
@@ -193,30 +166,23 @@ def admin():
             email = request.form.get('email')
             phonenum = request.form.get('phone')
             funds = request.form.get('funds')
-            (uid,) = db.queryDB('SELECT uid from users where username=?', (user,), True)
-            db.insertDB('UPDATE creds SET name=?, address=?, email=?, phonenum=?, funds=? WHERE uid=?', (name, address, email, phonenum, funds, uid), True) #honestly idk what the True does
+            uid = get_uid(user)
+            db.insertDB(
+                'UPDATE creds SET name=?, address=?, email=?, \
+                phonenum=?, funds=? WHERE uid=?', \
+                (name, address, email, phonenum, funds, uid))
 
 
         response = render_template("admin.html") # think this is the default?
         #might be more useful to continue displaying the user though
-        
 
     return response
 
-
-
-
 # Checks if user is admin
 def is_admin(username):
-    # if 'username' not in session: return False
-    # sess_username = session['username']
-
-    # if not is_valid_user(username): return False
-    # ^dunno if I should do this here
-    #make a db query
     (isAdmin,) = db.queryDB('SELECT isAdmin from users where username=?', (username,), True)
-    return isAdmin
-    # if sess_username == username:# or username == 'admin':
-    #     return True
-    # else:
-    #     return False
+    return is_valid_user(username) and isAdmin
+
+def get_uid(username):
+    (uid,) = db.queryDB('SELECT uid from users where username=?', (username,), True)    
+    return uid
