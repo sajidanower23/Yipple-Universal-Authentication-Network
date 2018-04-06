@@ -84,11 +84,6 @@ def me():
 @app.route('/users/<account>', methods=["GET", "POST"])
 def users(account):
     username = account
-
-    if username == 'me':
-        if 'username' in session:
-            return render_template("users.html", username=username)
-
     # TODO: Implement the ability to edit and view credentials for
     # the creds database.
     if request.method == 'GET':
