@@ -74,6 +74,13 @@ def register():
 
     return render_template("register.html")
 
+@app.route('/users/me', methods=["GET", "POST"])
+def me():
+    if 'username' not in session:
+        return '403 not logged in', 403
+    username = session['username']
+    return users(username)
+
 @app.route('/users/<account>', methods=["GET", "POST"])
 def users(account):
     username = account
