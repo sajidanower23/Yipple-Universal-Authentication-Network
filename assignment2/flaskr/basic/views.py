@@ -103,7 +103,9 @@ def users(account):
     return response
 
 def get_user_info(username):
-    (uid,) = db.queryDB('SELECT uid from users where username=?', (username,), True)
+    uid = get_uid(username)
+    if uid is None:
+        return None
     (_, name, address, email, phone, funds) = \
         db.queryDB('SELECT * from creds where uid=?', (uid,), True)
     return {
@@ -118,31 +120,69 @@ def get_user_info(username):
 def is_valid_user(username):
     if 'username' not in session: return False
     sess_username = session['username']
-    if sess_username == username:# or username == 'admin':
-        return True
-    else:
-        return False
+    return sess_username == username
 
-@app.route('/admin')
+@app.route('/admin', methods=["GET", "POST"])
 def admin():
+    # why does admin.html have a login button?
     response = None
+    # This is being checked in the function `is_admin`
+    if 'username' not in session: return "403 permission denied"
+
+    username = session['username']
+
+    if not is_admin(username):
+        return "403 permission denied", 403
 
     if request.method == 'GET':
         # TODO: Implement and secure the user administration control panel
         # The administration panel must distinguish between users that are administrators
         # as well as regular users.
+
+        # ^idk wtf this means 
+        # Aren't regular users prohibited from viewing this page? (Colin) 
+
         # It should also be able to search for a user via a get parameter called user.
         searchedUser = request.args.get('user')
-        response = render_template("admin.html", user=searchedUser)
+        if searchedUser is not None: #if a user was searched for:
+
+            user_info = get_user_info(searchedUser)
+            if user_info is None:
+                return '404 User not found', 404
+            return render_template("admin.html", user=searchedUser, user_info=user_info)
+        response = render_template("admin.html")
 
     elif request.method == 'POST':
         # TODO: You must also implement a post method in order update a searched users credentials.
         # It must return a page that denies a regular user
         # access and display '403 permission denied'.
-        response = render_template("admin.html")
+        #response = render_template("admin.html")
+
+        if 'user' in request.form: #assumed this is enough, bc I cbf checking everything
+            # get all the params (we're assuming they exist)
+            user = request.form.get('user') # the one we are searching for
+            name = request.form.get('name')
+            address = request.form.get('address')
+            email = request.form.get('email')
+            phonenum = request.form.get('phone')
+            funds = request.form.get('funds')
+            uid = get_uid(user)
+            db.insertDB(
+                'UPDATE creds SET name=?, address=?, email=?, \
+                phonenum=?, funds=? WHERE uid=?', \
+                (name, address, email, phonenum, funds, uid))
+
+
+        response = render_template("admin.html") # think this is the default?
+        #might be more useful to continue displaying the user though
 
     return response
 
+# Checks if user is admin
+def is_admin(username):
+    (isAdmin,) = db.queryDB('SELECT isAdmin from users where username=?', (username,), True)
+    return is_valid_user(username) and isAdmin
 
-
-
+def get_uid(username):
+    (uid,) = db.queryDB('SELECT uid from users where username=?', (username,), True)    
+    return uid
