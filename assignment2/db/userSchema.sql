@@ -14,9 +14,6 @@ CREATE TABLE creds(
     funds INTEGER
 );
 
--- INSERT INTO users (uid, username, passhash) VALUES (0, 'admin', 'alice');
--- INSERT INTO users (uid, username, passhash) VALUES (1, 'Bobby\" DROP TABLES;--', '\" OR \"1\"=\"1\"');
--- INSERT INTO users (uid, username, passhash) VALUES (2, 'carol', '0xbe3fcafeb4b3');
 INSERT INTO users (uid, username, passhash, isAdmin) VALUES (0, 'admin', 'alice', 1);
 INSERT INTO users (uid, username, passhash, isAdmin) VALUES (1, 'Bobby\" DROP TABLES;--', '\" OR \"1\"=\"1\"', 0);
 INSERT INTO users (uid, username, passhash, isAdmin) VALUES (2, 'carol', '0xbe3fcafeb4b3', 0);
