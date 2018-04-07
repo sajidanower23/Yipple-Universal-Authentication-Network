@@ -81,7 +81,9 @@ def me():
 
 @app.route('/users/<account>', methods=["GET", "POST"])
 def users(account):
-    username = account
+    username = account # for consistency
+    if username == 'admin' and not is_admin(username):
+        return '403 permission denied', 403
     # TODO: Implement the ability to edit and view credentials for
     # the creds database.
     if request.method == 'GET':
