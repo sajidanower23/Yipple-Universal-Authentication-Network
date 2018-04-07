@@ -26,20 +26,18 @@ def login():
 
         if 'password' in request.form:
             password = request.form.get('password')
-
+        
         if username is not None and password is not None:
 
             succ, sess = models.validateUser(username, password)
 
             if succ is True:
-                session['username'] = request.form.get('username')
-
+                session['username'] = username
                 # Craft the session
                 return redirect('/')
             else:
                 return "Login request failed", 400
         else:
-
             return "login request received", 400
 
     return render_template("login.html")
