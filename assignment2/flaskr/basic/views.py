@@ -84,10 +84,11 @@ def users(account):
     username = account # for consistency
     if username == 'admin' and not is_admin(username):
         return '403 permission denied', 403
+    accessor = session['username']
     # TODO: Implement the ability to edit and view credentials for
     # the creds database.
     if request.method == 'GET':
-        if is_valid_user(username):
+        if has_access(accessor):
             user_info = get_user_info(username)
             response = render_template("users.html", username=username, user_info=user_info)
         else:
@@ -180,10 +181,12 @@ def admin():
 
     return response
 
+def has_access(username): return  is_valid_user(username) or is_admin(username)
+
 # Checks if user is admin
 def is_admin(username):
     (isAdmin,) = db.queryDB('SELECT isAdmin from users where username=?', (username,), True)
-    return is_valid_user(username) and isAdmin
+    return isAdmin == 1 and is_valid_user(username)
 
 def get_uid(username):
     (uid,) = db.queryDB('SELECT uid from users where username=?', (username,), True)    
