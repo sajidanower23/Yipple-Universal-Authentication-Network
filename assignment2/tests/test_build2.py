@@ -24,7 +24,7 @@ import unittest
 from flaskr import app
 
 admin_data = {'username': 'admin', 'password': 'alice'}
-user_data = {'username': 'carol', 'password': '0xbeefcafebabe'}
+user_data = {'username': 'carol', 'password': '0xbe3fcafeb4b3'}
 bad_login = {'username':'badmin', 'password': 'lol'}
 
 admin_creds = {
