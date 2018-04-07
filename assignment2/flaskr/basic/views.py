@@ -77,7 +77,7 @@ def register():
 @app.route('/users/me', methods=["GET", "POST"])
 def me():
     if 'username' not in session:
-        return '403 not logged in', 403
+        return '403 permission denied', 403
     username = session['username']
     return users(username)
 
