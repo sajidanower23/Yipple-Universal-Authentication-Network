@@ -39,7 +39,7 @@ carol_creds = {
     'address':'Californ-eye-ay', \
     'email':'carol@candle.lite', \
     'phonenum':'+66 666 6666', \
-    'funds':'41424344'
+    'funds': '41424344'
 }
 
 DENIEDSTR = b'403 permission denied'
@@ -75,6 +75,7 @@ class TestApp:
 
         res = client.post('/login', data=user_data)
         res = client.get('/users/me')
+        print(res)
         assert user_data['username'].encode('utf-8') in res.data
 
         # Check own creds appear

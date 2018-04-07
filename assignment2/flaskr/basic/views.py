@@ -26,20 +26,18 @@ def login():
 
         if 'password' in request.form:
             password = request.form.get('password')
-
+        
         if username is not None and password is not None:
 
             succ, sess = models.validateUser(username, password)
 
             if succ is True:
-                session['username'] = request.form.get('username')
-
+                session['username'] = username
                 # Craft the session
                 return redirect('/')
             else:
                 return "Login request failed", 400
         else:
-
             return "login request received", 400
 
     return render_template("login.html")
@@ -74,14 +72,18 @@ def register():
 
     return render_template("register.html")
 
+@app.route('/users/me', methods=["GET", "POST"])
+def me():
+    if 'username' not in session:
+        return '403 permission denied', 403
+    username = session['username']
+    return users(username)
+
 @app.route('/users/<account>', methods=["GET", "POST"])
 def users(account):
-    username = account
-
-    if username == 'me':
-        if 'username' in session:
-            return render_template("users.html", username=username)
-
+    username = account # for consistency
+    if username == 'admin' and not is_admin(username):
+        return '403 permission denied', 403
     # TODO: Implement the ability to edit and view credentials for
     # the creds database.
     if request.method == 'GET':
