@@ -69,14 +69,27 @@ class TestApp:
     #     assert DENIEDSTR in res.data
 
     # user/me Tests
-    def test_me_page(self, client):
-        res = client.get('/users/me')
-        assert DENIEDSTR in res.data
+    # def test_me_page(self, client):
+    #     res = client.get('/users/me')
+    #     assert DENIEDSTR in res.data
 
+    #     res = client.post('/login', data=user_data)
+    #     res = client.get('/users/me')
+    #     print(res)
+    #     assert user_data['username'].encode('utf-8') in res.data
+
+    #     # Check own creds appear
+    #     assert carol_creds['name'].encode('utf-8') in res.data
+    #     assert carol_creds['address'].encode('utf-8') in res.data
+    #     assert carol_creds['email'].encode('utf-8') in res.data
+    #     assert carol_creds['phonenum'].encode('utf-8') in res.data
+    #     assert carol_creds['funds'].encode('utf-8') in res.data
+
+    #     assert user_data['username'].encode('utf-8') in res.data
+
+    def test_user_page(self, client):
         res = client.post('/login', data=user_data)
-        res = client.get('/users/me')
-        print(res)
-        assert user_data['username'].encode('utf-8') in res.data
+        res = client.get('/users/carol')
 
         # Check own creds appear
         assert carol_creds['name'].encode('utf-8') in res.data
@@ -85,63 +98,50 @@ class TestApp:
         assert carol_creds['phonenum'].encode('utf-8') in res.data
         assert carol_creds['funds'].encode('utf-8') in res.data
 
-        assert user_data['username'].encode('utf-8') in res.data
+        res = client.get('/users/admin')
+        assert DENIEDSTR in res.data
 
-    # def test_user_page(self, client):
-    #     res = client.post('/login', data=user_data)
-    #     res = client.get('/users/carol')
+    def test_user_page_admin(self, client):
+        res = client.post('/login', data=admin_data)
+        res = client.get('/users/admin')
 
-    #     # Check own creds appear
-    #     assert carol_creds['name'].encode('utf-8') in res.data
-    #     assert carol_creds['address'].encode('utf-8') in res.data
-    #     assert carol_creds['email'].encode('utf-8') in res.data
-    #     assert carol_creds['phonenum'].encode('utf-8') in res.data
-    #     assert carol_creds['funds'].encode('utf-8') in res.data
+        assert admin_creds['name'].encode('utf-8') in res.data
+        assert admin_creds['address'].encode('utf-8') in res.data
+        assert admin_creds['email'].encode('utf-8') in res.data
+        assert admin_creds['phonenum'].encode('utf-8') in res.data
+        assert admin_creds['funds'].encode('utf-8') in res.data
 
-    #     res = client.get('/users/admin')
-    #     assert DENIEDSTR in res.data
+        res = client.get('/users/carol')
 
-    # def test_user_page_admin(self, client):
-    #     res = client.post('/login', data=admin_data)
-    #     res = client.get('/users/admin')
+        # Check own creds appear
+        assert carol_creds['name'].encode('utf-8') in res.data
+        assert carol_creds['address'].encode('utf-8') in res.data
+        assert carol_creds['email'].encode('utf-8') in res.data
+        assert carol_creds['phonenum'].encode('utf-8') in res.data
+        assert carol_creds['funds'].encode('utf-8') in res.data
 
-    #     assert admin_creds['name'].encode('utf-8') in res.data
-    #     assert admin_creds['address'].encode('utf-8') in res.data
-    #     assert admin_creds['email'].encode('utf-8') in res.data
-    #     assert admin_creds['phonenum'].encode('utf-8') in res.data
-    #     assert admin_creds['funds'].encode('utf-8') in res.data
+    # Admin Tests
+    def test_admin_page(self, client):
+        res = client.get('/admin')
+        assert DENIEDSTR in res.data
 
-    #     res = client.get('/users/carol')
+        res = client.post('/login', data=admin_data)
+        res = client.get('/admin')
+        assert b'account search' in res.data
 
-    #     # Check own creds appear
-    #     assert carol_creds['name'].encode('utf-8') in res.data
-    #     assert carol_creds['address'].encode('utf-8') in res.data
-    #     assert carol_creds['email'].encode('utf-8') in res.data
-    #     assert carol_creds['phonenum'].encode('utf-8') in res.data
-    #     assert carol_creds['funds'].encode('utf-8') in res.data
+        res = client.get('/admin?search=admin')
+        assert admin_creds['name'].encode('utf-8') in res.data
+        assert admin_creds['address'].encode('utf-8') in res.data
+        assert admin_creds['email'].encode('utf-8') in res.data
+        assert admin_creds['phonenum'].encode('utf-8') in res.data
+        assert admin_creds['funds'].encode('utf-8') in res.data
 
-    # # Admin Tests
-    # def test_admin_page(self, client):
-    #     res = client.get('/admin')
-    #     assert DENIEDSTR in res.data
-
-    #     res = client.post('/login', data=admin_data)
-    #     res = client.get('/admin')
-    #     assert b'account search' in res.data
-
-    #     res = client.get('/admin?search=admin')
-    #     assert admin_creds['name'].encode('utf-8') in res.data
-    #     assert admin_creds['address'].encode('utf-8') in res.data
-    #     assert admin_creds['email'].encode('utf-8') in res.data
-    #     assert admin_creds['phonenum'].encode('utf-8') in res.data
-    #     assert admin_creds['funds'].encode('utf-8') in res.data
-
-    #     res = client.get('/admin?search=carol')
-    #     assert carol_creds['name'].encode('utf-8') in res.data
-    #     assert carol_creds['address'].encode('utf-8') in res.data
-    #     assert carol_creds['email'].encode('utf-8') in res.data
-    #     assert carol_creds['phonenum'].encode('utf-8') in res.data
-    #     assert carol_creds['funds'].encode('utf-8') in res.data
+        res = client.get('/admin?search=carol')
+        assert carol_creds['name'].encode('utf-8') in res.data
+        assert carol_creds['address'].encode('utf-8') in res.data
+        assert carol_creds['email'].encode('utf-8') in res.data
+        assert carol_creds['phonenum'].encode('utf-8') in res.data
+        assert carol_creds['funds'].encode('utf-8') in res.data
 
     # def test_credential_edit_success(self, client):
     #     """Carol can change her own credentials"""
