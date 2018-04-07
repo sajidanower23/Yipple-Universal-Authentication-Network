@@ -24,7 +24,7 @@ import unittest
 from flaskr import app
 
 admin_data = {'username': 'admin', 'password': 'alice'}
-user_data = {'username': 'carol', 'password': '0xbe3fcafeb4b3'}
+user_data = {'username': 'carol', 'password': '0xbeefcafebabe'}
 bad_login = {'username':'badmin', 'password': 'lol'}
 
 admin_creds = {
@@ -39,7 +39,7 @@ carol_creds = {
     'address':'Californ-eye-ay', \
     'email':'carol@candle.lite', \
     'phonenum':'+66 666 6666', \
-    'funds':'41424344'
+    'funds': '41424344'
 }
 
 DENIEDSTR = b'403 permission denied'
