@@ -183,47 +183,47 @@ class TestApp:
     #     reset_data['username'] = 'carol'
     #     client.post('/users/me', data=reset_data)
 
-    def test_credential_edit_failure(self, client):
-        """Carol cannot change Alice's credentials"""
-        client.post('/login', data=user_data)
+    # def test_credential_edit_failure(self, client):
+    #     """Carol cannot change Alice's credentials"""
+    #     client.post('/login', data=user_data)
 
-        changed_data = {
-            'username': 'admin', # username needs to be a part of the request
-            'name': 'Changed Name', \
-            'address':'Changed Address', \
-            'email':'changed_email@candle.lite', \
-            'phonenum':'+99 999 9999', \
-            'funds':'99999999'
-        }
+    #     changed_data = {
+    #         'username': 'admin', # username needs to be a part of the request
+    #         'name': 'Changed Name', \
+    #         'address':'Changed Address', \
+    #         'email':'changed_email@candle.lite', \
+    #         'phonenum':'+99 999 9999', \
+    #         'funds':'99999999'
+    #     }
 
-        # This update should fail, data should not change
-        res = client.post('/users/me', data=changed_data)
-        assert DENIEDSTR in res.data
+    #     # This update should fail, data should not change
+    #     res = client.post('/users/me', data=changed_data)
+    #     assert DENIEDSTR in res.data
 
-        res = client.post('/users/alice', data=changed_data)
-        assert DENIEDSTR in res.data
+    #     res = client.post('/users/alice', data=changed_data)
+    #     assert DENIEDSTR in res.data
 
-        res = client.post('/users/admin', data=changed_data)
-        assert DENIEDSTR in res.data
+    #     res = client.post('/users/admin', data=changed_data)
+    #     assert DENIEDSTR in res.data
 
-        # Check data has not changed for carol
-        res = client.get('/users/me')
-        assert carol_creds['name'].encode('utf-8') in res.data
-        assert carol_creds['address'].encode('utf-8') in res.data
-        assert carol_creds['email'].encode('utf-8') in res.data
-        assert carol_creds['phonenum'].encode('utf-8') in res.data
-        assert carol_creds['funds'].encode('utf-8') in res.data
+    #     # Check data has not changed for carol
+    #     res = client.get('/users/me')
+    #     assert carol_creds['name'].encode('utf-8') in res.data
+    #     assert carol_creds['address'].encode('utf-8') in res.data
+    #     assert carol_creds['email'].encode('utf-8') in res.data
+    #     assert carol_creds['phonenum'].encode('utf-8') in res.data
+    #     assert carol_creds['funds'].encode('utf-8') in res.data
 
-        # And check the data has not changed for Alice
-        client.get('/logout')
-        client.post('/login', data=admin_data)
+    #     # And check the data has not changed for Alice
+    #     client.get('/logout')
+    #     client.post('/login', data=admin_data)
 
-        res = client.get('/users/me')
-        assert admin_creds['name'].encode('utf-8') in res.data
-        assert admin_creds['address'].encode('utf-8') in res.data
-        assert admin_creds['email'].encode('utf-8') in res.data
-        assert admin_creds['phonenum'].encode('utf-8') in res.data
-        assert admin_creds['funds'].encode('utf-8') in res.data
+    #     res = client.get('/users/me')
+    #     assert admin_creds['name'].encode('utf-8') in res.data
+    #     assert admin_creds['address'].encode('utf-8') in res.data
+    #     assert admin_creds['email'].encode('utf-8') in res.data
+    #     assert admin_creds['phonenum'].encode('utf-8') in res.data
+    #     assert admin_creds['funds'].encode('utf-8') in res.data
 
 
     # def test_admin_can_change_others_creds(self, client):
@@ -259,38 +259,38 @@ class TestApp:
     #     reset_data['username'] = 'carol'
     #     res = client.post('/users/carol', data=reset_data)
 
-    # def test_admin_can_change_others_creds_through_admin_portal(self, client):
-    #     """Alice can change carols credentials through the admin portal because she is an admin"""
-    #     res = client.post('/login', data=admin_data)
+    def test_admin_can_change_others_creds_through_admin_portal(self, client):
+        """Alice can change carols credentials through the admin portal because she is an admin"""
+        res = client.post('/login', data=admin_data)
 
-    #     changed_data = {
-    #         'username': 'carol', # username needs to be a part of the request
-    #         'name': 'admin changed name', \
-    #         'address':'admin changed Address', \
-    #         'email':'admin_changed_email@candle.lite', \
-    #         'phonenum':'+88 888 8888', \
-    #         'funds':'88888888'
-    #     }
+        changed_data = {
+            'username': 'carol', # username needs to be a part of the request
+            'name': 'admin changed name', \
+            'address':'admin changed Address', \
+            'email':'admin_changed_email@candle.lite', \
+            'phonenum':'+88 888 8888', \
+            'funds':'88888888'
+        }
 
-    #     res = client.post('/admin', data=changed_data)
-    #     assert changed_data['name'].encode('utf-8') in res.data
-    #     assert changed_data['address'].encode('utf-8') in res.data
-    #     assert changed_data['email'].encode('utf-8') in res.data
-    #     assert changed_data['phonenum'].encode('utf-8') in res.data
-    #     assert changed_data['funds'].encode('utf-8') in res.data
+        res = client.post('/admin', data=changed_data)
+        assert changed_data['name'].encode('utf-8') in res.data
+        assert changed_data['address'].encode('utf-8') in res.data
+        assert changed_data['email'].encode('utf-8') in res.data
+        assert changed_data['phonenum'].encode('utf-8') in res.data
+        assert changed_data['funds'].encode('utf-8') in res.data
 
-    #     # Check Alice's data hasnt changed
-    #     res = client.get('/users/me')
-    #     assert admin_creds['name'].encode('utf-8') in res.data
-    #     assert admin_creds['address'].encode('utf-8') in res.data
-    #     assert admin_creds['email'].encode('utf-8') in res.data
-    #     assert admin_creds['phonenum'].encode('utf-8') in res.data
-    #     assert admin_creds['funds'].encode('utf-8') in res.data
+        # Check Alice's data hasnt changed
+        res = client.get('/users/me')
+        assert admin_creds['name'].encode('utf-8') in res.data
+        assert admin_creds['address'].encode('utf-8') in res.data
+        assert admin_creds['email'].encode('utf-8') in res.data
+        assert admin_creds['phonenum'].encode('utf-8') in res.data
+        assert admin_creds['funds'].encode('utf-8') in res.data
 
-    #     # Reset carols data
-    #     reset_data = carol_creds
-    #     reset_data['username'] = 'carol'
-    #     res = client.post('/admin', data=reset_data)
+        # Reset carols data
+        reset_data = carol_creds
+        reset_data['username'] = 'carol'
+        res = client.post('/admin', data=reset_data)
 
 if __name__ == '__main__':
     unittest.main()
