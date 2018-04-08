@@ -129,14 +129,14 @@ class TestApp:
         res = client.get('/admin')
         assert b'account search' in res.data
 
-        res = client.get('/admin?search=admin')
+        res = client.get('/admin?user=admin')
         assert admin_creds['name'].encode('utf-8') in res.data
         assert admin_creds['address'].encode('utf-8') in res.data
         assert admin_creds['email'].encode('utf-8') in res.data
         assert admin_creds['phonenum'].encode('utf-8') in res.data
         assert admin_creds['funds'].encode('utf-8') in res.data
 
-        res = client.get('/admin?search=carol')
+        res = client.get('/admin?user=carol')
         assert carol_creds['name'].encode('utf-8') in res.data
         assert carol_creds['address'].encode('utf-8') in res.data
         assert carol_creds['email'].encode('utf-8') in res.data
@@ -188,7 +188,7 @@ class TestApp:
         client.post('/login', data=user_data)
 
         changed_data = {
-            'username': 'admin', # username needs to be a part of the request
+            'username': 'alice', # username needs to be a part of the request
             'name': 'Changed Name', \
             'address':'Changed Address', \
             'email':'changed_email@candle.lite', \

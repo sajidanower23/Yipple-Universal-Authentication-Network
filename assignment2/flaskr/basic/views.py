@@ -160,7 +160,7 @@ def admin():
         # as well as regular users.
 
         # It should also be able to search for a user via a get parameter called user.
-        searchedUser = request.args.get('search')
+        searchedUser = request.args.get('user')
         if searchedUser is not None: #if a user was searched for:
 
             user_info = get_user_info(searchedUser)
