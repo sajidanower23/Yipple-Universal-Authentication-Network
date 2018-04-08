@@ -93,10 +93,8 @@ def users(account):
             response = "403 permission denied", 403
         # Deny access otherwise and display '404 not found' on the page
     elif request.method == 'POST':
-        debug_log(accessor)
-        ac = has_access_other(accessor)
-        debug_log(ac)
-        if has_access_other(accessor):
+        to_change_username = request.form.get('username')
+        if is_admin(accessor) or to_change_username == accessor:# has_access_other(accessor):
             # TODO: Update The Credentials
             # Two types of users can edit credentials for <account>
             # 1. Regular Users that have sessions == <account>
@@ -105,7 +103,6 @@ def users(account):
             user_info = get_user_info(username)
             response = render_template("users.html", username=username, user_info=user_info)
         else:
-            
             return '403 permission denied', 403
 
     return response
