@@ -82,27 +82,31 @@ def me():
 @app.route('/users/<account>', methods=["GET", "POST"])
 def users(account):
     username = account # for consistency
-    if username == 'admin' and not is_admin(username):
-        return '403 permission denied', 403
     accessor = session['username']
-    # TODO: Implement the ability to edit and view credentials for
-    # the creds database.
+    if username == 'admin' and not is_admin(accessor):
+        return '403 permission denied', 403
     if request.method == 'GET':
-        if has_access(accessor):
+        if has_access_own(accessor):
             user_info = get_user_info(username)
             response = render_template("users.html", username=username, user_info=user_info)
         else:
-            response = "404 not found", 404
+            response = "403 permission denied", 403
         # Deny access otherwise and display '404 not found' on the page
-    elif request.method == 'POST' and has_access(accessor):
-        # TODO: Update The Credentials
-        # Two types of users can edit credentials for <account>
-        # 1. Regular Users that have sessions == <account>
-        # 2. Administrators.
-        update_creds(request.form)
-        user_info = get_user_info(username)
-        response = render_template("users.html", username=username, user_info=user_info)
-        # response = render_template("users.html", username=username)
+    elif request.method == 'POST':
+        debug_log(accessor)
+        ac = has_access_other(accessor)
+        debug_log(ac)
+        if has_access_other(accessor):
+            # TODO: Update The Credentials
+            # Two types of users can edit credentials for <account>
+            # 1. Regular Users that have sessions == <account>
+            # 2. Administrators.
+            update_creds(request.form)
+            user_info = get_user_info(username)
+            response = render_template("users.html", username=username, user_info=user_info)
+        else:
+            
+            return '403 permission denied', 403
 
     return response
 
@@ -158,9 +162,6 @@ def admin():
         # The administration panel must distinguish between users that are administrators
         # as well as regular users.
 
-        # ^idk wtf this means 
-        # Aren't regular users prohibited from viewing this page? (Colin) 
-
         # It should also be able to search for a user via a get parameter called user.
         searchedUser = request.args.get('search')
         if searchedUser is not None: #if a user was searched for:
@@ -177,27 +178,13 @@ def admin():
         # access and display '403 permission denied'.
         #response = render_template("admin.html")
         update_creds(request.form)
-        # if 'user' in request.form: #assumed this is enough, bc I cbf checking everything
-        #     # get all the params (we're assuming they exist)
-        #     user = request.form.get('user') # the one we are searching for
-        #     name = request.form.get('name')
-        #     address = request.form.get('address')
-        #     email = request.form.get('email')
-        #     phonenum = request.form.get('phone')
-        #     funds = request.form.get('funds')
-        #     uid = get_uid(user)
-        #     db.insertDB(
-        #         'UPDATE creds SET name=?, address=?, email=?, \
-        #         phonenum=?, funds=? WHERE uid=?', \
-        #         (name, address, email, phonenum, funds, uid))
-
-
         response = render_template("admin.html") # think this is the default?
         #might be more useful to continue displaying the user though
 
     return response
 
-def has_access(username): return  is_valid_user(username) or is_admin(username)
+def has_access_own(username): return is_valid_user(username) or is_admin(username)
+def has_access_other(username): return is_valid_user(username) and is_admin(username)
 
 # Checks if user is admin
 def is_admin(username):
@@ -205,5 +192,13 @@ def is_admin(username):
     return isAdmin == 1 and is_valid_user(username)
 
 def get_uid(username):
+    # debug_log(username)
     (uid,) = db.queryDB('SELECT uid from users where username=?', (username,), True)    
     return uid
+
+
+# Util function
+def debug_log(msg):
+    print('===================')
+    print(msg)
+    print('===================')

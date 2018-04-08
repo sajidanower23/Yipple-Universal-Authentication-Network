@@ -188,7 +188,7 @@ class TestApp:
         client.post('/login', data=user_data)
 
         changed_data = {
-            'username': 'alice', # username needs to be a part of the request
+            'username': 'admin', # username needs to be a part of the request
             'name': 'Changed Name', \
             'address':'Changed Address', \
             'email':'changed_email@candle.lite', \
