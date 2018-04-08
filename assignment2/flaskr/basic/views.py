@@ -149,9 +149,9 @@ def admin():
     # This is being checked in the function `is_admin`
     if 'username' not in session: return "403 permission denied"
 
-    username = session['username']
+    accessor = session['username']
 
-    if not is_admin(username):
+    if not is_admin(accessor):
         return "403 permission denied", 403
 
     if request.method == 'GET':
@@ -173,10 +173,10 @@ def admin():
         # TODO: You must also implement a post method in order update a searched users credentials.
         # It must return a page that denies a regular user
         # access and display '403 permission denied'.
-        #response = render_template("admin.html")
+        searchedUser = request.form.get('username')
         update_creds(request.form)
-        response = render_template("admin.html") # think this is the default?
-        #might be more useful to continue displaying the user though
+        user_info = get_user_info(searchedUser)
+        return render_template("admin.html", user=searchedUser, user_info=user_info)
 
     return response
 
