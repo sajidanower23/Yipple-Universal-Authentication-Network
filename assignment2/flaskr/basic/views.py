@@ -94,11 +94,12 @@ def users(account):
         else:
             response = "404 not found", 404
         # Deny access otherwise and display '404 not found' on the page
-    else:
+    elif request.method == 'POST' and has_access(accessor):
         # TODO: Update The Credentials
         # Two types of users can edit credentials for <account>
         # 1. Regular Users that have sessions == <account>
         # 2. Administrators.
+        update_creds(request.form)
         user_info = get_user_info(username)
         response = render_template("users.html", username=username, user_info=user_info)
         # response = render_template("users.html", username=username)
@@ -124,6 +125,21 @@ def is_valid_user(username):
     if 'username' not in session: return False
     sess_username = session['username']
     return sess_username == username
+
+def update_creds(new_creds):
+    if 'username' in new_creds:
+        user = new_creds['username'] # the one we are searching for
+        name = new_creds['name']
+        address = new_creds['address']
+        email = new_creds['email']
+        phonenum = new_creds['phonenum']
+        funds = new_creds['funds']
+        uid = get_uid(user)
+        db.insertDB(
+            'UPDATE creds SET name=?, address=?, email=?, \
+            phonenum=?, funds=? WHERE uid=?', \
+            (name, address, email, phonenum, funds, uid))
+
 
 @app.route('/admin', methods=["GET", "POST"])
 def admin():
@@ -160,20 +176,20 @@ def admin():
         # It must return a page that denies a regular user
         # access and display '403 permission denied'.
         #response = render_template("admin.html")
-
-        if 'user' in request.form: #assumed this is enough, bc I cbf checking everything
-            # get all the params (we're assuming they exist)
-            user = request.form.get('user') # the one we are searching for
-            name = request.form.get('name')
-            address = request.form.get('address')
-            email = request.form.get('email')
-            phonenum = request.form.get('phone')
-            funds = request.form.get('funds')
-            uid = get_uid(user)
-            db.insertDB(
-                'UPDATE creds SET name=?, address=?, email=?, \
-                phonenum=?, funds=? WHERE uid=?', \
-                (name, address, email, phonenum, funds, uid))
+        update_creds(request.form)
+        # if 'user' in request.form: #assumed this is enough, bc I cbf checking everything
+        #     # get all the params (we're assuming they exist)
+        #     user = request.form.get('user') # the one we are searching for
+        #     name = request.form.get('name')
+        #     address = request.form.get('address')
+        #     email = request.form.get('email')
+        #     phonenum = request.form.get('phone')
+        #     funds = request.form.get('funds')
+        #     uid = get_uid(user)
+        #     db.insertDB(
+        #         'UPDATE creds SET name=?, address=?, email=?, \
+        #         phonenum=?, funds=? WHERE uid=?', \
+        #         (name, address, email, phonenum, funds, uid))
 
 
         response = render_template("admin.html") # think this is the default?
