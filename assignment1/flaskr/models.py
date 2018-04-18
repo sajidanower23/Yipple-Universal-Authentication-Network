@@ -18,13 +18,11 @@ class KomradeConfig:
         with open(self.config_file, 'w') as fh:
             fh.write(json.dumps(data))
 
-<<<<<<< HEAD
 def sanitise_name(name):
     return name.replace("/", "")
 
 def user_exists(komrade):
     return komrade.read() != {}
-=======
 def registerUser(username, password):
     komrade = KomradeConfig("user")
 
@@ -36,7 +34,6 @@ def registerUser(username, password):
     user_store[username] = pw_hash.decode('utf-8')
 
     komrade.write(user_store)
->>>>>>> 94156f038df3829a42e14084aaad6ac56ffd1f26
 
 def registerUser(username, password):
     username = sanitise_name(username)
@@ -52,12 +49,10 @@ def registerUser(username, password):
 
 # Implement me
 def validateUser(username, password):
-<<<<<<< HEAD
     komrade = KomradeConfig(username)
     data = komrade.read()
     # @todo Check the hashes of these passwords!
     return user_exists(komrade) and data['password'] == password
-=======
     komrade = KomradeConfig("user")
 
     user_store = komrade.read()
@@ -67,4 +62,3 @@ def validateUser(username, password):
     stored_pw = user_store[username].encode('utf-8')
 
     return bcrypt.hashpw(password.encode('utf-8'), stored_pw) == stored_pw 
->>>>>>> 94156f038df3829a42e14084aaad6ac56ffd1f26
