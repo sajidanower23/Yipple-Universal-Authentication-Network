@@ -300,7 +300,7 @@ class Xact:
         # SQL query should be ordered so the most recent transaction (by id) is first i.e. index 0.
         
         # Returns list of Xact objects
-        rows = db.select('SELECT * FROM XACTS WHERE XACT_ACCT LIKE ?', [acct_id])
+        rows = db.select('SELECT * FROM XACTS WHERE XACT_ACCT LIKE ? ORDER BY XACT_TIMESTAMP DESC', [acct_id])
         xacts = []
         for row in rows:
             xacts.append(Xact._from_row(row))
@@ -312,7 +312,7 @@ class Xact:
         # TODO: Implement method to return list of all transactions where 'xact_memo' matches a LIKE filter.
         # SQL query should be ordered so the most recent transaction (by id) is first i.e. index 0.
 
-        rows = db.select('SELECT * FROM XACTS WHERE XACT_MEMO LIKE ?', ['%' + filter + '%'])
+        rows = db.select('SELECT * FROM XACTS WHERE XACT_MEMO LIKE ? ORDER BY XACT_TIMESTAMP DESC', ['%' + filter + '%'])
         xacts = []
         for row in rows:
             xacts.append(Xact._from_row(row))
