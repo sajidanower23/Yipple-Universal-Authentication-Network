@@ -319,6 +319,7 @@ class Xact:
             xacts.append(Xact._from_row(row))
         return xacts
 
+new_offer_text = 'KomradeBank New Account Bonus Offer'
 
 def do_transfer(src, dst, amount, memo):
 
@@ -351,10 +352,6 @@ def do_transfer(src, dst, amount, memo):
 
     if src_acct.balance < amount:
         return "Transfer Failed - Insufficient funds."
-
-    Xact.new(src_acct.id, "Transfer Out", -amount)
-    Xact.new(dst_acct.id, "Transfer In", amount)
-
 
     # sql = [
     #     '-- TODO: write SQL query to insert new transaction for source account',
