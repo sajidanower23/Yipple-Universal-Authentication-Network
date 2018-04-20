@@ -249,7 +249,7 @@ class Acct:
     @staticmethod
     def by_filter(filter):
         #rows = db.select('-- TODO: write SQL query to return all rows where account id matches a LIKE filter', ['%' + filter + '%'])
-        rows = db.select('SELECT * FROM ACCTS WHERE ACCT_ID = ?', ['%' + filter + '%'])
+        rows = db.select('SELECT * FROM ACCTS WHERE ACCT_ID LIKE ?', ['%' + filter + '%'])
         accts = []
         for row in rows:
             accts.append(Acct._from_row(row))
@@ -312,7 +312,7 @@ class Xact:
         # TODO: Implement method to return list of all transactions where 'xact_memo' matches a LIKE filter.
         # SQL query should be ordered so the most recent transaction (by id) is first i.e. index 0.
 
-        rows = db.select('SELECT * FROM XACTS WHERE XACT_MEMO = ?', ['%' + filter + '%'])
+        rows = db.select('SELECT * FROM XACTS WHERE XACT_MEMO LIKE ?', ['%' + filter + '%'])
         xacts = []
         for row in rows:
             xacts.append(Xact._from_row(row))
