@@ -1,6 +1,6 @@
 import sqlite3, uuid, sys, os.path
 from werkzeug.security import generate_password_hash, check_password_hash
-import sys
+
 db_file = './app.db'
 
 
