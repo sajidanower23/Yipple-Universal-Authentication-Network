@@ -278,11 +278,10 @@ class Xact:
 
     @staticmethod
     def new(acct_id, memo, amount):
-        return db.execute('INSERT INTO XACTS (XACT_ACCT, XACT_MEMO, XACT_AMOUNT) VALUES (?, ?, ?)', [acct_id, memo, amount])
-
         # TODO: Implement method to create new transaction.
 
         # Returns id for the newly inserted transaction. (provided by db.execute())
+        return db.execute('INSERT INTO XACTS (XACT_ACCT, XACT_MEMO, XACT_AMOUNT) VALUES (?, ?, ?)', [acct_id, memo, amount])
 
     @staticmethod
     def by_id(xact_id):
