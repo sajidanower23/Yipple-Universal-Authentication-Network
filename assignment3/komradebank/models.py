@@ -319,8 +319,6 @@ class Xact:
             xacts.append(Xact._from_row(row))
         return xacts
 
-new_offer_text = 'KomradeBank New Account Bonus Offer'
-
 def do_transfer(src, dst, amount, memo):
 
     # src       - (string) Source account ID
