@@ -112,4 +112,4 @@ venv.bak/
 # Database files
 *.db
 
-
+.vscode/
