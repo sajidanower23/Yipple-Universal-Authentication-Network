@@ -358,15 +358,13 @@ def do_transfer(src, dst, amount, memo):
     # ]
 
     sql = [
-        'INSERT INTO XACTS (XACT_ACCT, XACT_MEMO, XACT_AMOUNT) VALUES ("'+src_acct.id+'", "Transfer Out", "'+str(-amount)+'")',
-        'INSERT INTO XACTS (XACT_ACCT, XACT_MEMO, XACT_AMOUNT) VALUES ("'+dst_acct.id+'", "Transfer In", "'+str(amount)+'")',
+        'INSERT INTO XACTS (XACT_ACCT, XACT_MEMO, XACT_AMOUNT) VALUES ("'+src_acct.id + '", "' + memo + '", "' + str(-amount)+'")',
+        'INSERT INTO XACTS (XACT_ACCT, XACT_MEMO, XACT_AMOUNT) VALUES ("'+dst_acct.id + '", "' + memo + '", "' + str(amount)+'")',
         'UPDATE ACCTS SET ACCT_BALANCE = ' + str(src_acct.balance - amount) + ' WHERE ACCT_ID = "' + src_acct.id + '"',
         'UPDATE ACCTS SET ACCT_BALANCE = ' + str(dst_acct.balance + amount) + ' WHERE ACCT_ID = "' + dst_acct.id + '"'
     ]
-    # print(sql)
 
     if not db.transaction(sql):
-        print('Woops')
         return "Transfer Failed - Internal Error."
 
     return "Funds transferred successfully."
