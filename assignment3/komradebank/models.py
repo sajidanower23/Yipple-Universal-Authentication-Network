@@ -222,12 +222,12 @@ class Acct:
 
     @staticmethod
     def new(user_id):
-        id = str(uuid.uuid4())
+        acc_id = str(uuid.uuid4())
         #db.execute('-- TODO: write SQL query to insert new account with provided account id and user id', [id, user_id])
-        db.execute('INSERT INTO ACCTS (ACCT_ID, ACCT_USER) VALUES (?, ?)', [id, user_id])
-        Xact.new(id, 'starting balance', 0.00)
-        do_transfer(Acct.by_user_id(1)[0].id, id, 1337.00, 'KomradeBank New Account Bonus Offer')
-        return id
+        db.execute('INSERT INTO ACCTS (ACCT_ID, ACCT_USER) VALUES (?, ?)', [acc_id, user_id])
+        Xact.new(acc_id, 'starting balance', 0.00)
+        do_transfer(Acct.by_user_id(1)[0].id, acc_id, 1337.00, 'KomradeBank New Account Bonus Offer')
+        return acc_id
 
     @staticmethod
     def by_id(acct_id):
