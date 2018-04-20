@@ -1,6 +1,6 @@
 import sqlite3, uuid, sys, os.path
 from werkzeug.security import generate_password_hash, check_password_hash
-
+import sys
 db_file = './app.db'
 
 
@@ -54,7 +54,8 @@ class DB:
                     cur.execute(q)
                 conn.commit()
                 return True
-            except:
+            except Exception as e:
+                print(e)
                 conn.rollback()
                 return False
 
@@ -300,7 +301,7 @@ class Xact:
         # SQL query should be ordered so the most recent transaction (by id) is first i.e. index 0.
         
         # Returns list of Xact objects
-        rows = db.select('SELECT * FROM XACTS WHERE XACT_ACCT = ?', [acct_id])
+        rows = db.select('SELECT * FROM XACTS WHERE XACT_ACCT LIKE ?', [acct_id])
         xacts = []
         for row in rows:
             xacts.append(Xact._from_row(row))
@@ -355,21 +356,23 @@ def do_transfer(src, dst, amount, memo):
     Xact.new(dst_acct.id, "Transfer In", amount)
 
 
-    '''sql = [
-        '-- TODO: write SQL query to insert new transaction for source account',
-        '-- TODO: write SQL query to insert new transaction for destination account',
-        '-- TODO: write SQL query to update source account balance',
-        '-- TODO: write SQL query to update destination account balance',
-    ]'''
+    # sql = [
+    #     '-- TODO: write SQL query to insert new transaction for source account',
+    #     '-- TODO: write SQL query to insert new transaction for destination account',
+    #     '-- TODO: write SQL query to update source account balance',
+    #     '-- TODO: write SQL query to update destination account balance',
+    # ]
 
     sql = [
         'INSERT INTO XACTS (XACT_ACCT, XACT_MEMO, XACT_AMOUNT) VALUES ("'+src_acct.id+'", "Transfer Out", "'+str(-amount)+'")',
         'INSERT INTO XACTS (XACT_ACCT, XACT_MEMO, XACT_AMOUNT) VALUES ("'+dst_acct.id+'", "Transfer In", "'+str(amount)+'")',
-        'UPDATE ACCTS SET BALANCE = ' + str(src_acct.balance - amount) + ' WHERE ACCT_ID = ' + src_acct.id,
-        'UPDATE ACCTS SET BALANCE = ' + str(dst_acct.balance + amount) + ' WHERE ACCT_ID = ' + dst_acct.id
+        'UPDATE ACCTS SET ACCT_BALANCE = ' + str(src_acct.balance - amount) + ' WHERE ACCT_ID = "' + src_acct.id + '"',
+        'UPDATE ACCTS SET ACCT_BALANCE = ' + str(dst_acct.balance + amount) + ' WHERE ACCT_ID = "' + dst_acct.id + '"'
     ]
+    # print(sql)
 
     if not db.transaction(sql):
+        print('Woops')
         return "Transfer Failed - Internal Error."
 
     return "Funds transferred successfully."
