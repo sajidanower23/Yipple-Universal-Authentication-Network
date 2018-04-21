@@ -1,0 +1,18 @@
+sudo: true
+language: python
+python:
+  - "3.6"
+# command to install dependencies
+addons:
+  apt:
+    sources:
+      - google-chrome
+    packages:
+      - google-chrome-stable
+
+install:
+  - sudo pip install -r assignment3/requirements.txt # wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/2.9/chromedriver_linux64.zip && sudo unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/;
+
+# command to run tests
+script:
+  - ./build.sh # or py.test for Python versions 3.5 and below
